@@ -1,0 +1,19 @@
+package pl.pas.exceptions.book;
+
+import pl.pas.utils.consts.I18n;
+
+public class BookNotFoundException extends BookBaseException {
+
+    public BookNotFoundException() {
+        super(I18n.BOOK_NOT_FOUND_EXCEPTION);
+    }
+    public BookNotFoundException(String message) {
+        super(message);
+    }
+    public BookNotFoundException(Throwable cause) {
+        super(I18n.BOOK_NOT_FOUND_EXCEPTION, cause);
+    }
+    public BookNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}

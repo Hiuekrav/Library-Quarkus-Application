@@ -1,0 +1,191 @@
+package pl.pas.services.implementations;
+
+import com.mongodb.MongoWriteException;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
+import pl.pas.dto.create.UserCreateDTO;
+import pl.pas.dto.update.UserUpdateDTO;
+import pl.pas.exceptions.ApplicationBaseException;
+import pl.pas.exceptions.user.EmailAlreadyExistException;
+import pl.pas.exceptions.user.UserDeactivateException;
+import pl.pas.mgd.RentMgd;
+import pl.pas.mgd.users.AdminMgd;
+import pl.pas.mgd.users.LibrarianMgd;
+import pl.pas.mgd.users.ReaderMgd;
+import pl.pas.mgd.users.UserMgd;
+import pl.pas.model.users.User;
+import pl.pas.repositories.interfaces.IRentRepository;
+import pl.pas.repositories.interfaces.IUserRepository;
+import pl.pas.services.interfaces.IUserService;
+import pl.pas.utils.consts.I18n;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+@RequiredArgsConstructor
+@ApplicationScoped
+public class UserService extends ObjectService implements IUserService {
+
+    private final IUserRepository userRepository;
+    private final IRentRepository rentRepository;
+
+
+
+    @Override
+    public User createAdmin(UserCreateDTO createDTO) {
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ApplicationBaseException(I18n.APPLICATION_NO_SUCH_ALGORITHM_EXCEPTION);
+        }
+        messageDigest.update(createDTO.password().getBytes());
+        String stringHash = new String(messageDigest.digest());
+        AdminMgd userMgd = new AdminMgd(
+                createDTO.firstName(),
+                createDTO.lastName(),
+                createDTO.email(),
+                stringHash,
+                createDTO.cityName(),
+                createDTO.streetName(),
+                createDTO.streetNumber()
+        );
+        UserMgd createdUser;
+        try {
+            createdUser = userRepository.save(userMgd);
+        }catch (MongoWriteException e) {
+            throw new EmailAlreadyExistException();
+        }
+        return new User(createdUser);
+    }
+
+    @Override
+    public User createLibrarian(UserCreateDTO createDTO) {
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ApplicationBaseException(I18n.APPLICATION_NO_SUCH_ALGORITHM_EXCEPTION);
+        }
+        messageDigest.update(createDTO.password().getBytes());
+        String stringHash = new String(messageDigest.digest());
+        LibrarianMgd librarianMgd = new LibrarianMgd(
+                createDTO.firstName(),
+                createDTO.lastName(),
+                createDTO.email(),
+                stringHash,
+                createDTO.cityName(),
+                createDTO.streetName(),
+                createDTO.streetNumber()
+        );
+
+        UserMgd createdUser;
+        try {
+            createdUser = userRepository.save(librarianMgd);
+        }catch (MongoWriteException e) {
+            throw new EmailAlreadyExistException();
+        }
+        return new User(createdUser);
+    }
+
+    @Override
+    public User createReader(UserCreateDTO createDTO) {
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ApplicationBaseException(I18n.APPLICATION_NO_SUCH_ALGORITHM_EXCEPTION);
+        }
+        messageDigest.update(createDTO.password().getBytes());
+        String stringHash = new String(messageDigest.digest());
+        ReaderMgd readerMgd = new ReaderMgd(
+                createDTO.firstName(),
+                createDTO.lastName(),
+                createDTO.email(),
+                stringHash,
+                createDTO.cityName(),
+                createDTO.streetName(),
+                createDTO.streetNumber()
+        );
+
+        UserMgd createdUser;
+        try {
+            createdUser = userRepository.save(readerMgd);
+        }catch (MongoWriteException e) {
+            throw new EmailAlreadyExistException();
+        }
+        return new User(createdUser);
+    }
+
+    @Override
+    public User findById(UUID id) {
+        UserMgd user = userRepository.findById(id);
+        return new User(user);
+    }
+    @Override
+    public List<User> findByEmail(String email) {
+        List<UserMgd> users = userRepository.findByEmail(email);
+        return users.stream().map(User::new).toList();
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll().stream().map(User::new).toList();
+    }
+
+    @Override
+    public User updateUser(UserUpdateDTO updateDTO) {
+        UserMgd modified = UserMgd.builder()
+                .id(updateDTO.id())
+                .firstName(updateDTO.firstName())
+                .lastName(updateDTO.lastName())
+                .email(updateDTO.email())
+                .cityName(updateDTO.cityName())
+                .streetName(updateDTO.streetName())
+                .streetNumber(updateDTO.streetNumber())
+                .build();
+
+        List<UserMgd> existingUsers = userRepository.findByEmail(updateDTO.email());
+        if (!existingUsers.isEmpty()) {
+            throw new EmailAlreadyExistException();
+        }
+
+        UserMgd updatedUser;
+        try {
+            updatedUser = userRepository.save(modified);
+        } catch (MongoWriteException e) {
+            throw new EmailAlreadyExistException();
+        }
+
+        return new User(updatedUser);
+    }
+
+    @Override
+    public void deactivateUser(UUID id) {
+        UserMgd user = userRepository.findById(id);
+        List<RentMgd> activeRents = Stream.concat(rentRepository.findAllActiveByReaderId(id).stream(),
+                                                  rentRepository.findAllFutureByReaderId(id).stream()).toList();
+        if (!activeRents.isEmpty()) {
+            throw new UserDeactivateException(I18n.USER_HAS_ACTIVE_OR_FUTURE_RENTS_EXCEPTION);
+        }
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void activateUser(UUID id) {
+        UserMgd user = userRepository.findById(id);
+        if(!user.isActive()) {
+            user.setActive(true);
+            userRepository.save(user);
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
+}
