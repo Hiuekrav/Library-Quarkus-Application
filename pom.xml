@@ -19,8 +19,8 @@
 
     </dependencies>
     <modules>
-        <module>Quarkus</module>
         <module>DTO</module>
+        <module>Quarkus</module>
     </modules>
     <packaging>pom</packaging>
     <properties>

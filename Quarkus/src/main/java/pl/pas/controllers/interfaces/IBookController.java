@@ -7,19 +7,21 @@ import jakarta.ws.rs.core.Response;
 import pl.pas.dto.create.BookCreateDTO;
 import pl.pas.dto.update.BookUpdateDTO;
 
-import javax.print.attribute.standard.Media;
 import java.util.UUID;
 
 @Path(pl.pas.utils.consts.GeneralConstants.APPLICATION_CONTEXT + "/books")
 public interface IBookController {
 
+    @POST
+    @Path("create")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createBook(@Valid BookCreateDTO bookCreateDTO);
+
     @GET
-    @Path(value = "{id}")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     Response findById(@PathParam("id") UUID id);
-
-    //@PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //ResponseEntity<?> createBook(@Valid @RequestBody BookCreateDTO bookCreateDTO);
 
     @GET()
     @Path("")
@@ -32,15 +34,21 @@ public interface IBookController {
     @Produces(MediaType.APPLICATION_JSON)
     Response findAll();
 
-    //@PutMapping(path = "{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //ResponseEntity<?> updateBook(@PathVariable("id") UUID id, @Valid @RequestBody BookUpdateDTO bookUpdateDTO);
-    //
-    //@DeleteMapping("{id}")
-    //ResponseEntity<?> deleteBook(@PathVariable UUID id);
-    //
-    //@PostMapping("{id}/archive/")
-    //ResponseEntity<?> archiveBook(@PathVariable UUID id);
-    //
-    //@PostMapping("{id}/activate/")
-    //ResponseEntity<?> activateBook(@PathVariable UUID id);
+    @PUT
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response updateBook(@PathParam("id") UUID id, @Valid BookUpdateDTO bookUpdateDTO);
+
+    @DELETE
+    @Path("{id}")
+    Response deleteBook(@PathParam("id") UUID id);
+
+    @POST
+    @Path("{id}/archive/")
+    Response archiveBook(@PathParam("id") UUID id);
+
+    @POST
+    @Path("{id}/activate/")
+    Response activateBook(@PathParam("id") UUID id);
 }

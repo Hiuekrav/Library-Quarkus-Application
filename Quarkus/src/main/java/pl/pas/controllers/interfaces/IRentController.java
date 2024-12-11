@@ -1,69 +1,97 @@
 package pl.pas.controllers.interfaces;
 
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import pl.pas.dto.create.RentCreateDTO;
 import pl.pas.dto.create.RentCreateShortDTO;
 import pl.pas.dto.update.RentUpdateDTO;
-import pl.pas.utils.consts.GeneralConstants;
 
 import java.util.UUID;
 
-//@Path(pl.pas.utils.consts.GeneralConstants.APPLICATION_CONTEXT + "/rents")
-//public interface IRentController {
-//
-//    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> createRent(@Valid @RequestBody RentCreateDTO rentCreateDTO);
-//
-//    @PostMapping(path = "now",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> createRentNow(@Valid @RequestBody RentCreateShortDTO rentCreateShortDTO);
-//
-//    @GetMapping(path = "future", produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> findAllFuture();
-//
-//    @GetMapping(path = "active", produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> findAllActive();
-//
-//    @GetMapping(path = "archive", produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> findAllArchive();
-//
-//    @GetMapping("all")
-//    ResponseEntity<?> findAllRents();
-//
-//    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> findById(@PathVariable("id") UUID id);
-//
-//    @GetMapping("reader/{id}/all")
-//    ResponseEntity<?> findAllByReaderId(@PathVariable("id") UUID readerId);
-//
-//    @GetMapping("reader/{id}/active")
-//    ResponseEntity<?> findAllActiveByReaderId(@PathVariable("id") UUID readerId);
-//
-//    @GetMapping("reader/{id}/archive")
-//    ResponseEntity<?> findAllArchivedByReaderId(@PathVariable("id") UUID readerId);
-//
-//    @GetMapping("reader/{id}/future")
-//    ResponseEntity<?> findAllFutureByReaderId(@PathVariable("id") UUID readerId);
-//
-//    @GetMapping("book/{id}/all")
-//    ResponseEntity<?> findAllByBookId(@PathVariable("id") UUID bookId);
-//
-//    @GetMapping("book/{id}/active")
-//    ResponseEntity<?> findAllActiveByBookId(@PathVariable("id") UUID bookId);
-//
-//    @GetMapping("book/{id}/archive")
-//    ResponseEntity<?> findAllArchivedByBookId(@PathVariable("id") UUID bookId);
-//
-//    @GetMapping("book/{id}/future")
-//    ResponseEntity<?> findAllFutureByBookId(@PathVariable("id") UUID bookId);
-//
-//    @PutMapping("{id}")
-//    ResponseEntity<?> updateRent(@PathVariable("id") UUID id, @Valid @RequestBody RentUpdateDTO endTime);
-//
-//    @PostMapping("/{id}/end")
-//    ResponseEntity<?> endRent(@PathVariable("id") UUID rentId);
-//
-//    @DeleteMapping("{id}")
-//    ResponseEntity<?> deleteRent(@PathVariable("id") UUID id);
-//
-//}
+@Path(pl.pas.utils.consts.GeneralConstants.APPLICATION_CONTEXT + "/rents")
+public interface IRentController {
+
+    @POST
+    @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createRent(@Valid RentCreateDTO rentCreateDTO);
+
+    @POST
+    @Path("now")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createRentNow(@Valid RentCreateShortDTO rentCreateShortDTO);
+
+    @GET
+    @Path("future")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response findAllFuture();
+
+    @GET
+    @Path("active")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response findAllActive();
+
+    @GET
+    @Path("archive")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response findAllArchive();
+
+    @GET
+    @Path("all")
+    Response findAllRents();
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response findById(@PathParam("id") UUID id);
+
+    @GET
+    @Path("reader/{id}/all")
+    Response findAllByReaderId(@PathParam("id") UUID readerId);
+
+    @GET
+    @Path("reader/{id}/active")
+    Response findAllActiveByReaderId(@PathParam("id") UUID readerId);
+
+    @GET
+    @Path("reader/{id}/archive")
+    Response findAllArchivedByReaderId(@PathParam("id") UUID readerId);
+
+    @GET
+    @Path("reader/{id}/future")
+    Response findAllFutureByReaderId(@PathParam("id") UUID readerId);
+
+    @GET
+    @Path("book/{id}/all")
+    Response findAllByBookId(@PathParam("id") UUID bookId);
+
+    @GET
+    @Path("book/{id}/active")
+    Response findAllActiveByBookId(@PathParam("id") UUID bookId);
+
+    @GET
+    @Path("book/{id}/archive")
+    Response findAllArchivedByBookId(@PathParam("id") UUID bookId);
+
+    @GET
+    @Path("book/{id}/future")
+    Response findAllFutureByBookId(@PathParam("id") UUID bookId);
+
+    @PUT
+    @Path("{id}")
+    Response updateRent(@PathParam("id") UUID id, @Valid RentUpdateDTO endTime);
+
+    @POST
+    @Path("/{id}/end")
+    Response endRent(@PathParam("id") UUID rentId);
+
+    @DELETE
+    @Path("{id}")
+    Response deleteRent(@PathParam("id") UUID id);
+
+}

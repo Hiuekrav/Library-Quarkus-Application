@@ -1,40 +1,64 @@
 package pl.pas.controllers.interfaces;
 
 import jakarta.validation.Valid;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import pl.pas.dto.create.UserCreateDTO;
 import pl.pas.dto.update.UserUpdateDTO;
 import pl.pas.utils.consts.GeneralConstants;
 
 import java.util.UUID;
 
-//@RequestMapping(GeneralConstants.APPLICATION_CONTEXT + "/users")
-//public interface IUserController {
-//
-//    @PostMapping(value = "create-admin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> createAdmin(@RequestBody @Valid  UserCreateDTO userCreateDTO);
-//
-//    @PostMapping(value = "create-librarian", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> createLibrarian( @RequestBody @Valid UserCreateDTO userCreateDTO);
-//
-//    @PostMapping(value = "create-reader", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> createReader( @RequestBody @Valid  UserCreateDTO userCreateDTO);
-//
-//    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> findById(@PathVariable UUID id);
-//
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> findByEmail(@RequestParam("email") String email);
-//
-//    @GetMapping(value = "all", produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> findAll();
-//
-//    @PutMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<?> updateUser(@PathVariable("id") UUID id, @Valid @RequestBody UserUpdateDTO userUpdateDTO);
-//
-//    @PostMapping(value = "{id}/activate")
-//    ResponseEntity<?> activateUser(@PathVariable UUID id);
-//
-//    @PostMapping(value = "{id}/deactivate")
-//    ResponseEntity<?> deactivateUser(@PathVariable UUID id);
-//
-//}
+@Path(GeneralConstants.APPLICATION_CONTEXT + "/users")
+public interface IUserController {
+
+    @POST
+    @Path("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createAdmin(@Valid UserCreateDTO userCreateDTO);
+
+    @POST
+    @Path("librarian")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createLibrarian(@Valid UserCreateDTO userCreateDTO);
+
+    @POST
+    @Path("reader")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createReader(@Valid UserCreateDTO userCreateDTO);
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response findById(@PathParam("id") UUID id);
+
+    @GET
+    @Path("")
+    @QueryParam("email")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response findByEmail(@QueryParam("email") String email);
+
+    @GET
+    @Path("all")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response findAll();
+
+    @PUT
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response updateUser(@PathParam("id") UUID id, @Valid UserUpdateDTO userUpdateDTO);
+
+    @POST
+    @Path("{id}/activate")
+    Response activateUser(@PathParam("id") UUID id);
+
+    @POST
+    @Path("{id}/deactivate")
+    Response deactivateUser(@PathParam("id") UUID id);
+
+}
