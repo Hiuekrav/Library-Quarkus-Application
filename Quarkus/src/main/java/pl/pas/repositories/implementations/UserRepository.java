@@ -7,6 +7,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.ValidationOptions;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Singleton;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import pl.pas.exceptions.ApplicationDatabaseException;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@ApplicationScoped
+@Singleton
 public class UserRepository extends ObjectRepository<UserMgd> implements IUserRepository {
 
     public UserRepository(MyMongoClient client) {

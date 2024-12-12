@@ -18,7 +18,7 @@ public interface IRentController {
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    Response createRent(@Valid RentCreateDTO rentCreateDTO);
+    Response createRent(RentCreateDTO rentCreateDTO);
 
     @POST
     @Path("now")

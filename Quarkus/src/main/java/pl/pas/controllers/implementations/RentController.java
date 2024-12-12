@@ -1,5 +1,6 @@
 package pl.pas.controllers.implementations;
 
+import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import pl.pas.controllers.interfaces.IRentController;
