@@ -92,9 +92,9 @@ The following changes have been made to the original application:
 
 ### Installation
 1. Clone this repository.
-2. Set up MongoDB replica set by running services directly from docker-compose using IDE or by executing ***docker-compose up -d*** command.
-3. Build the project: ***mvn clean install***
-4. Run the application: use ***mvn quarkus:dev*** command from REST directory in your terminal (or run main method from RestApplication class in your IDE).
+2. Set up MongoDB replica set by running services directly from docker-compose using IDE or by executing ```docker-compose up -d``` command.
+3. Build the project: ```mvn clean install```
+4. Run the application: use ```mvn quarkus:dev``` command from REST directory in your terminal (or run main method from RestApplication class in your IDE).
 5. Access **Swagger UI** (recommended): Open your browser and navigate to http://localhost:8080/swagger-ui/index.html to access the Swagger UI for API documentation and testing. Alternatively you can use Postman or cURL for testing endpoints.
 
 ### Testing
